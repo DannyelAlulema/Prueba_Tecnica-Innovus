@@ -1,12 +1,10 @@
 <?php
 
 namespace App\Controllers;
-use App\Traits\Responser;
+use Core\AbstractController as Controller;
 
-class HomeController
+class HomeController extends Controller
 {
-    use Responser;
-    
     public function index() {
         $this->successResponse('API - Prueba tecnica Innovus (Dannyel Alulema)');
     }

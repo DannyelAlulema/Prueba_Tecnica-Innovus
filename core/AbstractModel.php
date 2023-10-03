@@ -4,7 +4,7 @@ namespace Core;
 use PDO;
 use PDOException;
 
-class AbstractModel
+abstract class AbstractModel
 {
     protected $table;
     protected $id;
@@ -31,7 +31,7 @@ class AbstractModel
     {
         $this->setTable($table);
         $this->setFields($fields);
-        
+
         $this->conn = DBConnection::getInstance()->getConnection();
     }
 

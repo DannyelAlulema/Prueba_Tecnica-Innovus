@@ -4,6 +4,8 @@ namespace Core;
 
 class Router
 {
+    use Responser;
+
     private $routes = [];
     private $middleware = [];
 
@@ -67,7 +69,7 @@ class Router
         if (method_exists($controllerInstance, $method))
             $controllerInstance->$method();
         else
-            echo 'Method not exists';
+            $this->errorResponse('Method not exists', 404);
     }
 
     private function isMatchingPath($uri, $path) {
@@ -75,6 +77,6 @@ class Router
     }
 
     private function notFound() {
-        echo "Route not found";
+        $this->errorResponse('Method not exists', 404);
     }
 }
