@@ -6,6 +6,8 @@ use PDOException;
 
 class DBConnection
 {
+    use Responser;
+
     private static $instance = null;
     private $connection;
 
@@ -20,7 +22,7 @@ class DBConnection
             $this->connection = new PDO("mysql:host=$host;dbname=$database", $username, $password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Error al conectar a la base de datos: " . $e->getMessage());
+            $this->errorResponse("Error al conectar a la base de datos: " . $e->getMessage(), 500);
         }
     }
 

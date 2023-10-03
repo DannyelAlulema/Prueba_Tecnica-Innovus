@@ -6,6 +6,8 @@ use PDOException;
 
 abstract class AbstractModel
 {
+    use Responser;
+
     protected $table;
     protected $id;
     private $fields = [];
@@ -74,7 +76,7 @@ abstract class AbstractModel
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $rs;
         } catch (PDOException $e) {
-            die("Error: " . $e->getMessage());
+            $this->errorResponse("Error: " . $e->getMessage(), 500);
         }
     }
 
@@ -87,7 +89,7 @@ abstract class AbstractModel
             $rs = $stmt->fetch(PDO::FETCH_ASSOC);
             return $rs;
         } catch (PDOException $e) {
-            die("Error: " . $e->getMessage());
+            $this->errorResponse("Error: " . $e->getMessage(), 500);
         }
     }
 
@@ -101,7 +103,7 @@ abstract class AbstractModel
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $rs;
         } catch (PDOException $e) {
-            die("Error: " . $e->getMessage());
+            $this->errorResponse("Error: " . $e->getMessage(), 500);
         }
     }
 
@@ -117,14 +119,54 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function save()
+    public function save($data)
     {
-        // Implement the save method logic here.
+        sort($this->fields);
+        $values = '';
+        $fields = '';
+
+        foreach ($this->fields as $field) {
+            $fields .= $field . ', ';
+            $values .= "'". $data[$field] . "', " ;
+        }
+
+        $fields = rtrim($fields, ', ');
+        $values = rtrim($values, ', ');
+
+        $sql = 'INSERT INTO '. $this->getTable() . ' ('. $fields . ') VALUES ('. $values . ')';
+        
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->rowCount();
+        } catch (PDOException $e) {
+            $this->errorResponse("Error: " . $e->getMessage(), 500);
+        }
     }
 
-    public function update($id)
+    public function update($id, $data)
     {
-        // Implement the update method logic here.
+        $result = false;
+        sort($this->fields);
+        $fields = '';
+        
+        foreach ($this->fields as $field)
+            $fields .= $field . " = '" . $data[$field] . "', ";
+
+        $fields = rtrim($fields, ', ');
+        $sql = "UPDATE ". $this->getTable(). " SET $fields WHERE id = ?";
+
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$id]);
+            
+            $result = true;
+        } catch (PDOException $e) {
+            $this->errorResponse("Error: " . $e->getMessage(), 500);
+        }
+
+        return $result;
     }
 
     public function delete($id)
@@ -134,7 +176,7 @@ abstract class AbstractModel
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([$id]);
         } catch (PDOException $e) {
-            die("Error: " . $e->getMessage());
+            $this->errorResponse("Error: " . $e->getMessage(), 500);
         }
     }
 

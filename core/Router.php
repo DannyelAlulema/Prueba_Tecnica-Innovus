@@ -8,6 +8,7 @@ class Router
 
     private $routes = [];
     private $middleware = [];
+    private $params = [];
 
     public function get($path, $handler, $middleware = []) {
         $this->addRoute('GET', $path, $handler, $middleware);
@@ -15,10 +16,6 @@ class Router
     
     public function post($path, $handler, $middleware = []) {
         $this->addRoute('POST', $path, $handler, $middleware);
-    }
-    
-    public function patch($path, $handler, $middleware = []) {
-        $this->addRoute('PATCH', $path, $handler, $middleware);
     }
     
     public function put($path, $handler, $middleware = []) {
@@ -45,7 +42,11 @@ class Router
             foreach ($this->routes[$method] as $path => $route) {
                 if ($this->isMatchingPath($uri, $path)) {
                     $this->callMiddleware($route['middleware']);
-                    $this->callHandler($route['handler']);
+                    // Obtiene el contenido del cuerpo de la solicitud
+                    $requestBody = file_get_contents('php://input');
+                    $requestData = json_decode($requestBody, true);
+
+                    $this->callHandler($route['handler'], $requestData);
                     return;
                 }
             }
@@ -60,21 +61,40 @@ class Router
         }
     }
 
-    private function callHandler($handler) {
+    private function callHandler($handler, $requestData) {
         $controller = $handler[0];
         $method = $handler[1];
 
         $controllerInstance = new $controller;
+        $params = array_merge([$requestData], $this->params);
         
         if (method_exists($controllerInstance, $method))
-            $controllerInstance->$method();
+            call_user_func_array([$controllerInstance, $method], $params);
         else
             $this->errorResponse('Method not exists', 404);
     }
 
     private function isMatchingPath($uri, $path) {
-        return $uri == $path;
-    }
+        $uriSegments = explode('/', trim($uri, '/'));
+        $pathSegments = explode('/', trim($path, '/'));
+        $params = [];
+    
+        if (count($uriSegments) !== count($pathSegments)) {
+            return false;
+        }
+    
+        foreach ($pathSegments as $key => $segment) {
+            if ($segment !== $uriSegments[$key] && strpos($segment, '{') !== false) {
+                $paramName = trim($segment, '{}');
+                $params[$paramName] = $uriSegments[$key];
+            } elseif ($segment !== $uriSegments[$key]) {
+                return false;
+            }
+        }
+        
+        $this->params = $params;
+        return true;
+    }    
 
     private function notFound() {
         $this->errorResponse('Method not exists', 404);

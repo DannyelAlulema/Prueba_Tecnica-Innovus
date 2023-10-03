@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Models;
+
 use Core\AbstractModel as Model;
 
 class User extends Model

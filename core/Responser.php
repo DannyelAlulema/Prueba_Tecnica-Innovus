@@ -14,5 +14,3 @@ trait Responser
         echo json_encode(['error' => $message, 'code' => $code]);
     }
 }
-
-
