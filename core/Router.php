@@ -53,26 +53,21 @@ class Router
 
     private function callMiddleware($middleware) {
         foreach ($middleware as $middlewareClass) {
-            if (class_exists($middlewareClass)) {
-                $middlewareInstance = new $middlewareClass;
-                $middlewareInstance->handle();
-            }
+            $middlewareInstance = new $middlewareClass;
+            $middlewareInstance->handle();
         }
     }
 
     private function callHandler($handler) {
-        list($controller, $method) = explode('@', $handler);
-        $ctrl = include_once __DIR__ . '/../app/controllers/' . $controller . '.php';
-        
-        if (class_exists($controller)) {
-            $controllerInstance = new $controller;
+        $controller = $handler[0];
+        $method = $handler[1];
 
-            if (method_exists($controllerInstance, $method))
-                $controllerInstance->$method();
-            else
-                echo 'Method not exists';
-        } else
-            echo $controller.' not exists';
+        $controllerInstance = new $controller;
+        
+        if (method_exists($controllerInstance, $method))
+            $controllerInstance->$method();
+        else
+            echo 'Method not exists';
     }
 
     private function isMatchingPath($uri, $path) {

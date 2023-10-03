@@ -1,6 +1,8 @@
 {
     "name": "api/prueba-innovus",
-    "require": {},
+    "require": {
+        "firebase/php-jwt": "^6.8"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app",

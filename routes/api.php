@@ -1,6 +1,8 @@
 <?php
 
+use App\Controllers\HomeController;
+
 use Core\Router;
 $router = new Router();
 
-$router->get('/', 'HomeController@index');
+$router->get('/', [ HomeController::class, 'index' ]);

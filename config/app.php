@@ -1,9 +1,10 @@
 <?php
 
-define('APP_KEY', '');
+define('APP_KEY', 'cTfB3uq6gN7BSwpJU2gDlyULFeNxDb7D');
 
-define('DB_HOST', '');
-define('DB_PORT', '');
-define('DB_USER', '');
-define('DB_PASS', '');
-define('DB_DATABASE', '');
+// MySQL
+define('DB_HOST', 'localhost');
+define('DB_PORT', '3307');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', 'toor');
+define('DB_DATABASE', 'innovus');

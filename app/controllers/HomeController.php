@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Controllers;
-//use Core\AbstractController;
+use App\Traits\Responser;
 
 class HomeController
 {
+    use Responser;
+    
     public function index() {
-        echo "Hola mundo desde API";
+        $this->successResponse('API - Prueba tecnica Innovus (Dannyel Alulema)');
     }
 }
