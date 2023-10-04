@@ -6,7 +6,7 @@ use Core\AbstractModel as Model;
 
 class Book extends Model
 {
-    public public function __construct() {
+    public function __construct() {
         $fields = [
             'title',
             'author_id',

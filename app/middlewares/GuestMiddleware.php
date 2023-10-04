@@ -14,7 +14,6 @@ class GuestMiddleware
 
         if (!empty($authorizationHeader)) {
             $this->errorResponse('Not Found', 404);
-            die();
         }
     }
 }

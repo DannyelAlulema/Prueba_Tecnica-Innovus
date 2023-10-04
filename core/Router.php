@@ -71,8 +71,6 @@ class Router
 
         $controllerInstance = new $controller;
         $params = array_merge([$requestData], $this->params);
-        var_dump($params);
-        die();
         
         if (method_exists($controllerInstance, $method))
             call_user_func_array([$controllerInstance, $method], $params);

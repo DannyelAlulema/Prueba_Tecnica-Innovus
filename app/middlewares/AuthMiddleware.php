@@ -16,7 +16,6 @@ class AuthMiddleware
 
         if (!$this->isValidJwt($authorizationHeader)) {
             $this->errorResponse('Not Found', 404);
-            die();
         }
 
         $this->addDecodedJwtToRequest($authorizationHeader);

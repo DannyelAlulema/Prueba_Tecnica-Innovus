@@ -25,7 +25,7 @@ abstract class AbstractController
         }
 
         return [
-            'isValid' => (count($errors) <= 0),
+            'isValid' => (count($errors) == 0),
             'errors' => $errors
         ];
     }
@@ -34,7 +34,7 @@ abstract class AbstractController
     {
         switch ($ruleName) {
             case 'required':
-                return isset($data[$field]);
+                return isset($data[$field]) && !empty($data[$field]);
 
             case 'min':
                 $minLength = (int) $params[0];
@@ -46,7 +46,7 @@ abstract class AbstractController
 
             case 'regex':
                 $pattern = $params[0];
-                return preg_match($pattern, $data[$field]);     
+                return preg_match($pattern, $data[$field]);
 
             case 'integer':
                 return filter_var($data[$field], FILTER_VALIDATE_INT) !== false;

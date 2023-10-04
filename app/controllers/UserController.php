@@ -14,7 +14,7 @@ class UserController extends Controller
         $this->successResponse($data);
     }
     
-    public function show($id) {
+    public function show($requestData, $id) {
         $user = new User();
         $data = $user->find($id);
 
@@ -39,10 +39,8 @@ class UserController extends Controller
         $user = new User();
         $usr = $user->where('username', $requestData['username'])->get();
         
-        if ($usr) {
+        if ($usr)
             $this->errorResponse('Ya se registro un usuario con el mismo username', 400);
-            return;
-        }
         
         $requestData['password'] = password_hash($requestData['password'], PASSWORD_BCRYPT, [ 'cost' => 4 ]);
 
@@ -70,12 +68,16 @@ class UserController extends Controller
         }
         
         $user = new User();
+        $aux1 = $user->where('username', $requestData['username'])->get();
+        
+        if ($aux1)
+            $this->errorResponse('Ya se registro un usuario con el mismo username', 400);
         
         if (!empty($requestData['password']))
             $requestData['password'] = password_hash($requestData['password'], PASSWORD_BCRYPT, [ 'cost' => 4 ]);
         else {
-            $usr = $user->find($id);
-            $requestData['password'] = $usr['password'];
+            $aux2 = $user->find($id);
+            $requestData['password'] = $aux2['password'];
         }
 
         $updated = $user->update($id, $requestData);
@@ -86,7 +88,7 @@ class UserController extends Controller
             $this->errorResponse("No se pudo actualizar el registro.", 500);
     }
     
-    public function destroy($id) {
+    public function destroy($requestData, $id) {
         $user = new User();
         $user->delete($id);
 
