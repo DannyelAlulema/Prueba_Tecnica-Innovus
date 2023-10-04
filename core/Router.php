@@ -49,6 +49,7 @@ class Router
                     $this->callHandler($route['handler'], $requestData);
                     return;
                 }
+                $this->params = [];
             }
         }
         $this->notFound();
@@ -59,6 +60,9 @@ class Router
             $middlewareInstance = new $middlewareClass;
             $middlewareInstance->handle();
         }
+
+        if (isset($_REQUEST['decoded_jwt']))
+            unset($_REQUEST['decoded_jwt']);
     }
 
     private function callHandler($handler, $requestData) {
@@ -67,6 +71,8 @@ class Router
 
         $controllerInstance = new $controller;
         $params = array_merge([$requestData], $this->params);
+        var_dump($params);
+        die();
         
         if (method_exists($controllerInstance, $method))
             call_user_func_array([$controllerInstance, $method], $params);

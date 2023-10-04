@@ -35,8 +35,17 @@ class UserController extends Controller
             $this->errorResponse($validation['errors'], 400);
             return;
         }
-
+        
         $user = new User();
+        $usr = $user->where('username', $requestData['username'])->get();
+        
+        if ($usr) {
+            $this->errorResponse('Ya se registro un usuario con el mismo username', 400);
+            return;
+        }
+        
+        $requestData['password'] = password_hash($requestData['password'], PASSWORD_BCRYPT, [ 'cost' => 4 ]);
+
         $rowCount = $user->save($requestData);
         
         if ($rowCount > 0)
@@ -59,8 +68,16 @@ class UserController extends Controller
             $this->errorResponse($validation['errors'], 400);
             return;
         }
-
+        
         $user = new User();
+        
+        if (!empty($requestData['password']))
+            $requestData['password'] = password_hash($requestData['password'], PASSWORD_BCRYPT, [ 'cost' => 4 ]);
+        else {
+            $usr = $user->find($id);
+            $requestData['password'] = $usr['password'];
+        }
+
         $updated = $user->update($id, $requestData);
 
         if ($updated)
