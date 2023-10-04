@@ -29,3 +29,9 @@ CREATE TABLE Users (
     name VARCHAR(255),
     role VARCHAR(50)
 );
+
+-- Black List Tokens
+CREATE TABLE blacklist_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(255) NOT NULL
+);

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Traits\TokenBlackList;
 use Core\AbstractController as Controller;
 
 use App\Models\User;
@@ -9,6 +10,8 @@ use Firebase\JWT\JWT;
 
 class AuthController extends Controller
 {
+    use TokenBlackList;
+
     public function login($requestData) {
         $rules = [
             'username' => 'required',
@@ -40,7 +43,6 @@ class AuthController extends Controller
         
         $payload = [
             'id' => $data['id'],
-            'name' => $data['name'],
             'role' => $data['role']
         ];
 
@@ -53,6 +55,13 @@ class AuthController extends Controller
     }
     
     public function logout() {
-        $this->successResponse('Holaa');
+        $authorizationHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        $token = str_replace('Bearer ', '', $authorizationHeader);
+
+        $this->addToBlacklistDatabase($token);
+
+        $this->successResponse([
+            'message' => 'Se cerro la sesión correctamente'
+        ]);
     }
 }

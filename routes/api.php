@@ -31,7 +31,7 @@ $router->put('/books/{id}', [ BookController::class, 'update' ], [ AuthMiddlewar
 $router->delete('/books/{id}', [ BookController::class, 'destroy' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
 
 $router->get('/users', [ UserController::class, 'index' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
-$router->get('/users/{id}', [ UserController::class, 'show' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
+$router->get('/users/{id}', [ UserController::class, 'show' ], [ AuthMiddleware::class ]);
 $router->post('/users', [ UserController::class, 'store' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
 $router->put('/users/{id}', [ UserController::class, 'update' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
 $router->delete('/users/{id}', [ UserController::class, 'destroy' ], [ AuthMiddleware::class, AdminMiddleware::class ]);

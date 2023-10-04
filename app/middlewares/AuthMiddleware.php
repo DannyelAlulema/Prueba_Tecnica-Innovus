@@ -2,29 +2,31 @@
 
 namespace App\Middlewares;
 
+use App\Traits\TokenBlackList;
 use Core\Responser;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class AuthMiddleware
 {
-    use Responser;
+    use Responser, TokenBlackList;
 
     public function handle()
     {
         $authorizationHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-
-        if (!$this->isValidJwt($authorizationHeader)) {
-            $this->errorResponse('Not Found', 404);
-        }
-
-        $this->addDecodedJwtToRequest($authorizationHeader);
-    }
-
-    private function isValidJwt($authorizationHeader)
-    {
         $token = str_replace('Bearer ', '', $authorizationHeader);
 
+        if (!$this->isValidJwt($token)) 
+            $this->errorResponse('Not Found', 404);
+        
+        if ($this->isTokenBlacklisted($token))
+            $this->errorResponse('Not Found', 404);
+
+        $this->addDecodedJwtToRequest($token);
+    }
+
+    private function isValidJwt($token)
+    {
         if (!empty($token)) {
             try {
                 $decoded = JWT::decode($token, new Key(APP_KEY, 'HS256'));
@@ -39,10 +41,8 @@ class AuthMiddleware
         return false;
     }
 
-    private function addDecodedJwtToRequest($authorizationHeader)
+    private function addDecodedJwtToRequest($token)
     {
-        $token = str_replace('Bearer ', '', $authorizationHeader);
-        
         $decoded = JWT::decode($token, new Key(APP_KEY, 'HS256'));
         $_REQUEST['decoded_jwt'] = $decoded;
     }
