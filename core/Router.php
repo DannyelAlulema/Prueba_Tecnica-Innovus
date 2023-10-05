@@ -56,6 +56,11 @@ class Router
     }
 
     private function callMiddleware($middleware) {
+        foreach ($this->middleware as $middlewareClass) {
+            $middlewareInstance = new $middlewareClass;
+            $middlewareInstance->handle();
+        }
+        
         foreach ($middleware as $middlewareClass) {
             $middlewareInstance = new $middlewareClass;
             $middlewareInstance->handle();

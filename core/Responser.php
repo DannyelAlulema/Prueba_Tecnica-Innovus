@@ -6,7 +6,7 @@ trait Responser
 {
     public function successResponse($data)
     {
-        echo json_encode(['data' => $data]);
+        echo json_encode(['data' => $data, 'code' => 200]);
         die();
     }
     

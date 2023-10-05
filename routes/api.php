@@ -8,10 +8,13 @@ use App\Controllers\HomeController;
 
 use App\Middlewares\AdminMiddleware;
 use App\Middlewares\AuthMiddleware;
+use App\Middlewares\CorsMiddleware;
 use App\Middlewares\GuestMiddleware;
 
 use Core\Router;
 $router = new Router();
+
+$router->middleware(CorsMiddleware::class);
 
 $router->get('/', [ HomeController::class, 'index' ]);
 
