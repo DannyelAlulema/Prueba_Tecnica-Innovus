@@ -151,8 +151,8 @@ abstract class AbstractModel
         sort($this->fields);
         $fields = '';
         
-        foreach ($this->fields as $field)
-            $fields .= $field . " = '" . $data[$field] . "', ";
+        foreach ($data as $field => $value)
+            $fields .= $field . " = '" . $value . "', ";
 
         $fields = rtrim($fields, ', ');
         $sql = "UPDATE ". $this->getTable(). " SET $fields WHERE id = ?";
@@ -221,11 +221,11 @@ abstract class AbstractModel
 
         return $this;
     }
-
-    public function join($table, $type = 'INNER')
+    
+    public function join($table, $on, $equality, $type = 'INNER')
     {
         $this->joining = true;
-        $this->joins[] = " " . strtoupper($type) . " JOIN " . $table . " ON " . $this->getTable() . ".id = " . $table . ".id";
+        $this->joins[] = " " . strtoupper($type) . " JOIN " . $table . " ON " . $on . " = " . $equality;
 
         return $this;
     }

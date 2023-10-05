@@ -9,7 +9,9 @@ class BookController extends Controller
 {
     public function index() {
         $book = new Book();
-        $data = $book->all();
+        $data = $book->select(['books.*', 'authors.name as author'])
+            ->join('authors', 'authors.id', 'books.author_id')
+        ->get();
 
         $this->successResponse($data);
     }

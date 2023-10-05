@@ -38,11 +38,16 @@ class Router
     }
 
     function dispatch($method, $uri) {
+        foreach ($this->middleware as $middlewareClass) {
+            $middlewareInstance = new $middlewareClass;
+            $middlewareInstance->handle();
+        }
+        
         if (isset($this->routes[$method])) {
             foreach ($this->routes[$method] as $path => $route) {
                 if ($this->isMatchingPath($uri, $path)) {
                     $this->callMiddleware($route['middleware']);
-                    // Obtiene el contenido del cuerpo de la solicitud
+                    // Obtiener contenido del cuerpo de la solicitud
                     $requestBody = file_get_contents('php://input');
                     $requestData = json_decode($requestBody, true);
 
@@ -55,12 +60,7 @@ class Router
         $this->notFound();
     }
 
-    private function callMiddleware($middleware) {
-        foreach ($this->middleware as $middlewareClass) {
-            $middlewareInstance = new $middlewareClass;
-            $middlewareInstance->handle();
-        }
-        
+    private function callMiddleware($middleware) {        
         foreach ($middleware as $middlewareClass) {
             $middlewareInstance = new $middlewareClass;
             $middlewareInstance->handle();

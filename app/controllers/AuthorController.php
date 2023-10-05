@@ -9,7 +9,10 @@ class AuthorController extends Controller
 {
     public function index() {
         $author = new Author();
-        $data = $author->all();
+        $data = $author->select(['authors.*', 'COUNT(books.id) as books'])
+            ->join('books', 'authors.id', 'books.author_id', 'LEFT')
+            ->groupBy('authors.id, authors.name, authors.biography')
+        ->get();
 
         $this->successResponse($data);
     }

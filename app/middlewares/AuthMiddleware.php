@@ -16,11 +16,14 @@ class AuthMiddleware
         $authorizationHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
         $token = str_replace('Bearer ', '', $authorizationHeader);
 
+        if (empty($token))
+            $this->errorResponse('Acceso denegado, token no proporcionado.', 401);
+
         if (!$this->isValidJwt($token)) 
-            $this->errorResponse('Not Found', 404);
+            $this->errorResponse('Token inválido.', 403);
         
         if ($this->isTokenBlacklisted($token))
-            $this->errorResponse('Not Found', 404);
+            $this->errorResponse('Token inválido.', 401);
 
         $this->addDecodedJwtToRequest($token);
     }

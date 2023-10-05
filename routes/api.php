@@ -17,6 +17,7 @@ $router = new Router();
 $router->middleware(CorsMiddleware::class);
 
 $router->get('/', [ HomeController::class, 'index' ]);
+$router->get('/verify', [ AuthController::class, 'verify' ]);
 
 $router->post('/login', [ AuthController::class, 'login' ], [ GuestMiddleware::class ]);
 $router->post('/logout', [ AuthController::class, 'logout' ], [ AuthMiddleware::class ]);
@@ -36,5 +37,5 @@ $router->delete('/books/{id}', [ BookController::class, 'destroy' ], [ AuthMiddl
 $router->get('/users', [ UserController::class, 'index' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
 $router->get('/users/{id}', [ UserController::class, 'show' ], [ AuthMiddleware::class ]);
 $router->post('/users', [ UserController::class, 'store' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
-$router->put('/users/{id}', [ UserController::class, 'update' ], [ AuthMiddleware::class, AdminMiddleware::class ]);
+$router->put('/users/{id}', [ UserController::class, 'update' ], [ AuthMiddleware::class ]);
 $router->delete('/users/{id}', [ UserController::class, 'destroy' ], [ AuthMiddleware::class, AdminMiddleware::class ]);

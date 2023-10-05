@@ -55,9 +55,9 @@ class UserController extends Controller
     public function update($requestData, $id) {
         $rules = [
             'username' => 'required',
-            'password' => 'required',
+            //'password' => 'required',
             'name' => 'required',
-            'role' => 'required'
+            //'role' => 'required'
         ];
 
         $validation = $this->validate($rules, $requestData);
@@ -70,15 +70,11 @@ class UserController extends Controller
         $user = new User();
         $aux1 = $user->where('username', $requestData['username'])->get();
         
-        if ($aux1)
-            $this->errorResponse('Ya se registro un usuario con el mismo username', 400);
-        
+        if ($aux1 && isset($aux1['id']) && $aux1['id'] != $id)
+            $this->errorResponse('Ya se registro un usuario con el mismo nombre de usuario', 400);
+    
         if (!empty($requestData['password']))
             $requestData['password'] = password_hash($requestData['password'], PASSWORD_BCRYPT, [ 'cost' => 4 ]);
-        else {
-            $aux2 = $user->find($id);
-            $requestData['password'] = $aux2['password'];
-        }
 
         $updated = $user->update($id, $requestData);
 

@@ -43,7 +43,8 @@ class AuthController extends Controller
         
         $payload = [
             'id' => $data['id'],
-            'role' => $data['role']
+            'role' => $data['role'],
+            'created_at' => date("d-m-Y_h:i:s")
         ];
 
         $jwt = JWT::encode($payload, APP_KEY, 'HS256');
@@ -63,5 +64,10 @@ class AuthController extends Controller
         $this->successResponse([
             'message' => 'Se cerro la sesión correctamente'
         ]);
+    }
+
+    public function verify()
+    {
+        $this->successResponse([]);
     }
 }
