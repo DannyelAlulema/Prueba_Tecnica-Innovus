@@ -14,6 +14,4 @@ INSERT INTO Books (title, author_id, genre, publisher, publication_year, descrip
 
 -- Inserción de usuarios
 INSERT INTO Users (username, password, name, role) VALUES
-    ('usuario1@innovus.com', 'contraseña_hasheada_1', 'Usuario 1', 'cliente'),
-    ('usuario2@innovus.com', 'contraseña_hasheada_2', 'Usuario 2', 'cliente'),
-    ('admin@innovus.com', 'contraseña_hasheada_admin', 'Usuario Admin', 'admin');
+    ('admin', '$2y$04$hjzNs06zJRuf/NYUCQDb5OrN99bhYoueM4KcgbZfKWq0vAfgIqaQu', 'Administrador Sistema', 'ADMIN');
